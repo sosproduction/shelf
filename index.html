@@ -1,0 +1,198 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+<meta charset="utf-8">
+<title>jQuery Super Shelf</title>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+<script src="assets/jquery.animation.easing.js"></script>
+
+<!-- Menu script -->
+<script src="shelf.js"></script>
+<script src="jquery.transit.js"></script>
+
+<!-- Clean slate for the demo -->
+<link rel="stylesheet" href="assets/_reset.css" />
+
+
+<style type="text/css">
+
+
+#wrapper {
+	height: 400px;
+	width: 960px;
+}
+
+/***************************************************************************************/
+	body {font-family: 'Lucida Grande', verdana, sans-serif;font-size:13px;}
+	a:link, a:visited, a:hover, a:active {color:#fff;text-decoration:none;}
+	#menu-controls {width:780px;margin:0 auto;padding:10px;text-align:center;}
+	#menu-controls a {margin:0 10px;color:#000;outline:none}
+	#menu-controls a.active {font-weight:bold;}
+	.options {width:402px;margin:50px auto 0;text-align:center;}
+	.options span {font-size:10px;font-weight:bold}
+	.options div{width:200px;float:left}
+	#menu-container.xray {overflow:visible;}
+	li a{position:relative;display:block;text-align:center;}
+	h4{margin-top:10px;font-weight:bold;font-size:14px;line-height:16px;}
+	#loading{position:absolute;width:31px;height:31px;top:50px;left:370px;}
+/***************************************************************************************/
+
+	
+	#menu-container {
+		position:relative; /* REQUIRED */
+		width:800px;
+		height:440px;
+		padding:20px 0 30px;
+		margin:180px auto 0;
+		overflow:hidden; /* REQUIRED */
+		background: url('assets/img/shelf.png');
+	}
+	#menu-container ul {
+		list-style-type:none; /* REQUIRED */
+		position:absolute; /* REQUIRED */
+		right:0; /* REQUIRED */
+	}
+	#menu-container ul li {
+		position:absolute; /* REQUIRED */
+		width:130px; /* Size of menu list item, or 'cell' */
+		height:150px; /* Size of menu list item, or 'cell' */
+		padding:10px;
+		padding-top: 140px;
+	}
+	
+
+</style>
+</head>
+
+<body>
+<div id="wrapper">
+	<div id="menu-container">
+		<div id="loading"></div>
+		<ul>
+			<li><a href="#"><img class="asset1" src="assets/img/cd.jpg" /></a><h4><a href="#">Thistle</a></h4></li>
+			<li><a href="#"><img class="asset2" src="assets/img/cd.jpg" /></a><h4><a href="#">Threnody For the Universe</a></h4></li>
+			<li><a href="#"><img class="asset3" src="assets/img/cd.jpg" /></a><h4><a href="#">Montesorri Arc</a></h4></li>
+			<li><a href="#"><img class="asset4" src="assets/img/cd.jpg" /></a><h4><a href="#">The Tired and Nervous Mind</a></h4></li>
+			<li><a href="#"><img class="asset5" src="assets/img/cd.jpg" /></a><h4><a href="#">Inchworm's Day Out</a></h4></li>
+		</ul>
+		<ul>
+			<li><a href="#"><img src="assets/img/cd.jpg" /></a><h4><a href="#">Symphony In a Two Dollar Room</a></h4></li>
+			<li><a href="#"><img src="assets/img/cd.jpg" /></a><h4><a href="#">Piano Trio No. 1</a></h4></li>
+			<li><a href="#"><img src="assets/img/cd.jpg" /></a><h4><a href="#">Music for Piano and Orchestra</a></h4></li>
+			<li><a href="#"><img src="assets/img/cd.jpg" /></a><h4><a href="#">Guitar Concerto No. 1</a></h4></li>
+		</ul>
+		<ul>
+			<li><a href="#"><img src="assets/img/cd.jpg" /></a><h4><a href="#">Farewell</a></h4></li>
+			<li><a href="#"><img src="assets/img/cd.jpg" /></a><h4><a href="#">Titan</a></h4></li>
+			<li><a href="#"><img src="assets/img/cd.jpg" /></a><h4><a href="#">The Possible Ear</a></h4></li>
+			<li><a href="#"><img src="assets/img/cd.jpg" /></a><h4><a href="#">That Road Home</a></h4></li>
+			<li><a href="#"><img src="assets/img/cd.jpg" /></a><h4><a href="#">The Lesson</a></h4></li>
+		</ul>
+		<ul>
+			<li><a href="#"><img src="assets/img/cd.jpg" /></a><h4><a href="#">The Visitor</a></h4></li>
+			<li><a href="#"><img src="assets/img/cd.jpg" /></a><h4><a href="#">Goodwater</a></h4></li>
+			<li><a href="#"><img src="assets/img/cd.jpg" /></a><h4><a href="#">The Walker</a></h4></li>
+			<li><a href="#"><img src="assets/img/cd.jpg" /></a><h4><a href="#">April Showers Bring May Flowers</a></h4></li>
+		</ul>
+	</div>
+	<div id="menu-controls">
+		<a href="#" data-target="0" class="active">Guitar</a>
+		<a href="#" data-target="1">Classical</a>
+		<a href="#" data-target="2">Electronic</a>
+		<a href="#" data-target="3">Film Soundtracks</a>
+	</div>
+	
+	<!-- not using this yet... use later with expanded animations 
+	<div class="options">
+		<div id="xray">
+			<a href="#">Toggle X-Ray</a><br /><br /><span>OFF</span>
+		</div>
+		<div id="auto">
+			<a href="#">Toggle Auto</a><br /><br /><span>OFF</span>
+		</div>
+	</div>-->
+</div>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+	
+	var options = {
+		div: "#menu-container",
+		controls: "#menu-controls",
+		loader: "#loading",
+		x: 150,
+		y: 200,
+		easing: "easeOutBackSmall",
+		easeIn: "easeOutBack",
+		preloadAll: true
+	};
+	
+	var asset_zoom = 0;
+
+	var menu = new slideMenu(options);
+	
+	var auto = false, x, inc;
+	
+	$("#xray a").click(function(){
+		toggle_xray();
+		return false;
+	});
+	
+	$("#auto a").click(function(){
+		toggle_auto();
+		return false;
+	});
+
+	// using transit.js we scale up the CD on clicking it.
+	$(".asset2").click(function() {
+		if (asset_zoom == 0) {
+			$('.asset2').transition({ scale: 4.2 });
+			asset_zoom = 1;
+		}
+		else
+		{
+			$('.asset2').transition({ scale: 1.0 });	
+			asset_zoom = 0;
+		}
+	});
+
+
+
+
+
+
+	if (window.location.hash.substring(1) == 'xray') toggle_xray();
+
+	function toggle_xray(){
+		$(options.div).toggleClass("xray");
+		$("#xray span").text($(options.div).hasClass("xray") ? 'ON' : 'OFF');
+		window.location.hash = $(options.div).hasClass("xray") ? 'xray' : '';
+	}
+	
+	function toggle_auto(){
+		if (auto === false){
+			x = $("#menu-controls a.active").data("target");
+			auto_advance();
+			inc = setInterval(auto_advance, 3000);
+			auto = true;
+		}
+		else{
+			clearInterval(inc);
+			auto = false;
+		}
+		$("#auto span").text(auto === true ? 'ON' : 'OFF');
+	}
+	
+	function auto_advance(){
+		x = x < 3 ? x + 1 : 0;
+		menu.switchTo(x);
+	}
+		
+});
+</script>
+
+</body>
+</html>
