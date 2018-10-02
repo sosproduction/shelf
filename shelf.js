@@ -1,5 +1,5 @@
 /* Jquery Shelf */
-/* (c) Copyright 2012 - South of Sleep Productions - Stacey Nicole Yates */
+/* (c) Copyright 2012 - South of Sleep Productions */
  
 var slideMenu = function(options){
 
